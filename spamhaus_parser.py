@@ -2,6 +2,8 @@
 
 import argparse
 from datetime import datetime
+import os
+import json
 import requests
 from bs4 import BeautifulSoup
 
@@ -22,8 +24,17 @@ class Listing(object):
     def __repr__(self):
         return "{incident_id:<12}{ip_address:<22}{domain_name} \t {timestamp}\t {description}".format(**self.__dict__)
 
+    def to_json(self):
+        return json.dumps({
+            "incident_id": self.incident_id,
+            "ip_address": self.ip_address,
+            "domain_name": self.domain_name,
+            "timestamp": self.timestamp.isoformat(),
+            "description": self.description
+        }, sort_keys=True, indent=4)
 
-def parse_spamhaus(domain):
+
+def parse_spamhaus(domain, format):
     uri = SPAMHAUS_ROOT.format(domain)
 
     request = requests.get(uri)
@@ -38,17 +49,20 @@ def parse_spamhaus(domain):
                           description=' '.join(s.strip() for s in spans[4].text.splitlines()))
         listings.append(listing)
 
-    for listing in sorted(listings, reverse=True):
-        print listing
+    if format == 'json':
+        print (",%s" % os.linesep).join(l.to_json() for l in sorted(listings, reverse=True))
+    else:
+        print os.linesep.join(str(l) for l in sorted(listings, reverse=True))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Parse the Spamhaus DB for your domain")
     parser.add_argument("-d", "--domain", help="The domain you want to query")
+    parser.add_argument("-f", "--format", type=str, choices=["json", "tab"],
+                        default="tab", help="Output format")
     args = parser.parse_args()
 
     if args.domain:
-        parse_spamhaus(args.domain)
+        parse_spamhaus(args.domain, args.format)
     else:
         parser.print_help()
-
