@@ -5,7 +5,7 @@ A basic parser for Spamhaus listings so you don't need to leave the command line
 *Usage:*
 ```bash
 $ ./spamhause_parser.py -d mywebsite.com
-SBL000001   0.0.0.0/32            amazon.com     2016-04-25 06:22:00      Malware distribution @0.0.0.0
+SBL000001   0.0.0.0/32            mywebsite.com     2016-04-25 06:22:00      Malware distribution @0.0.0.0
 ```
 
 ### Dependancies
