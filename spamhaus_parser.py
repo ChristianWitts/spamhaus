@@ -46,7 +46,7 @@ def parse_spamhaus(domain, format):
                           ip_address=spans[1].b.text,
                           domain_name=spans[2].b.text,
                           timestamp=spans[3].text,
-                          description=' '.join(s.strip() for s in spans[4].text.splitlines()))
+                          description=' '.join(s.strip() for s in spans[4].text.strip().splitlines()))
         listings.append(listing)
 
     if format == 'json':
