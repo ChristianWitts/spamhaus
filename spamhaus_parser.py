@@ -50,7 +50,7 @@ def parse_spamhaus(domain, format):
         listings.append(listing)
 
     if format == 'json':
-        print (",%s" % os.linesep).join(l.to_json() for l in sorted(listings, reverse=True))
+        print "[" + (",%s" % os.linesep).join(l.to_json() for l in sorted(listings, reverse=True)) + "]"
     else:
         print os.linesep.join(str(l) for l in sorted(listings, reverse=True))
 
